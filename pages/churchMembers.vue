@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Getting all drivers</h1>
+        <h1>All Church Members On Record</h1>
         <DataTableJs
         :supabase-table-name=table
         >
@@ -13,5 +13,5 @@
     definePageMeta({
         middleware: 'auth',
     });
-    const table = 'awayBusDrivers'
+    const table = 'church_members'
 </script>

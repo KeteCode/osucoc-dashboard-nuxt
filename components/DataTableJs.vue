@@ -58,13 +58,15 @@
                                 </template> 
                             </v-card-text>
                                 <v-card-actions class="justify-end">
-                                    <v-btn color="primary" variant="tonal" @click="editSupabaseRow"
+                                    
+                                    <v-btn :disabled="isRowActionProcessing" color="primary" variant="tonal" @click="editSupabaseRow"
                                         >Save</v-btn
                                     >
-                                    <v-btn variant="text" @click="isActive.value = false"
+                                    <v-btn :disabled="isRowActionProcessing" variant="text" @click="isActive.value = false"
                                         >Close</v-btn
                                     >
                             </v-card-actions>
+                            
                         </v-card>
                         </template>
                     </v-dialog>
@@ -92,10 +94,10 @@
                                 </DataTable>
                             </v-card-text>
                             <v-card-actions class="justify-end">
-                            <v-btn color="danger" variant="tonal" @click="deleteSupabaseRows"
+                            <v-btn :disabled="isRowActionProcessing" color="danger" variant="tonal" @click="deleteSupabaseRows"
                                 >Yes Delete</v-btn
                             >
-                            <v-btn color="primary" variant="tonal" @click="isActive.value = false"
+                            <v-btn :disabled="isRowActionProcessing" color="primary" variant="tonal" @click="isActive.value = false"
                                 >No Close</v-btn
                             >
                             </v-card-actions>
@@ -194,6 +196,7 @@
     let showEditDialog = ref(false);
     let showDeleteDialog = ref(false);
     let showAddDialog = ref(false);
+    let isRowActionProcessing = ref(false);
 
     let dt;
     let editor;
@@ -418,15 +421,18 @@
     }
 
     async function editSupabaseRow(){
+        isRowActionProcessing.value = true;
         console.log(tableObject.name)
         //let selectedRows = dt.rows({ selected: true }).data().toArray();
         const { data, error } = await client
         .from(props.supabaseTableName)
         .upsert(tableObject)
         .select()
-        selectedRows.value[0] = data;
+        //selectedRows.value[0] = data;
         if (error) {
             console.log(error)
+            // show error dialog
+            isRowActionProcessing.value = false;
         }
         else {
             console.log(data)
@@ -434,6 +440,7 @@
             showEditDialog.value = false;
             // update dt row
             dt.row({ selected: true }).data(data[0]);
+            isRowActionProcessing.value = false;
             return data;
         }
         
@@ -441,12 +448,15 @@
     async function deleteSupabaseRows(){
             //console.log(selectedRows.value[0][props.supabaseTableId])
             console.log("Starting deletion process",selectedRows.value[0][props.supabaseTableId])
+            isRowActionProcessing.value = true;
             const { error } = await client
             .from(props.supabaseTableName)
             .delete()
             .eq(props.supabaseTableId, selectedRows.value[0][props.supabaseTableId])
             if (error) {
                 console.log(error)
+                // show error dialog
+                isRowActionProcessing.value = false;
             }
             else {
                 console.log('deleted')
@@ -454,6 +464,7 @@
                 dt.rows({ selected: true }).remove().draw();
                 // dismiss dialog
                 showDeleteDialog.value = false;
+                isRowActionProcessing.value = false;
             }     
     }
 

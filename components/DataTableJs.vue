@@ -226,7 +226,7 @@
     })
     tableObjectTemplate = clearObject(markRaw(data.value[0]))
     // delete id key from tableObjectTemplate
-    delete tableObjectTemplate[props.supabaseTableId]
+    //delete tableObjectTemplate[props.supabaseTableId]
     //delete tableObjectTemplate["created_at"]
     
     // checking for excluded columns and removing them from tableObjectTemplate

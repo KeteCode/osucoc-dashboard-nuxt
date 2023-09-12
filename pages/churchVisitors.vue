@@ -3,7 +3,7 @@
         <h1>Visitors On Record</h1>
         <DataTableJs
         :supabase-table-name=table
-        :excluded-columns="['created_at']"
+        :excluded-columns="[]"
         >
 
         </DataTableJs>

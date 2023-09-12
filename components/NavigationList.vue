@@ -45,7 +45,7 @@
         },
         {
           title: 'Weekly Outreach',
-          value: 'churchMembers',
+          value: 'weeklyoutreach',
         },
         {
           title: 'Users',

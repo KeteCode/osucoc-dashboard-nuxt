@@ -1,31 +1,53 @@
 <template>
-    <div >
-      <v-container>
-        <v-row>
-            <v-col></v-col>
-            <v-col>
-                <h1>Osu COC Admin Portal</h1>
-                <h3 >Forgot password</h3>
-                <form @submit.prevent="resetPassword">
-                    <ErrorAlert :error-msg="authError" @clearError="clearError" />
-                    <SuccessAlert :success-msg="authSuccess" @clearSuccess="clearSuccess" />
-                    <div >
-                    <label >
-                        <div >
-                        <v-text-field type="text" placeholder="Email address" v-model="email"></v-text-field>
-                        </div>
-                    </label>
-                    </div>
-                    <v-btn type="submit" :disabled="loading">
-                     <div :class="{loading: loading}">Request password reset</div>
-                    </v-btn>
-                </form>
+    <v-container class="fill-height">
+        <v-row align="center" justify="center">
+            <v-col cols="12" sm="8" md="4">
+                <v-card class="elevation-12 pa-4">
+                    <v-card-title class="text-center text-h5">
+                        Osu COC Admin Portal
+                    </v-card-title>
+                    <v-card-subtitle class="text-center mb-4">
+                        Forgot Password
+                    </v-card-subtitle>
+
+                    <v-card-text>
+                        <form @submit.prevent="resetPassword">
+                            <ErrorAlert :error-msg="authError" />
+                            <SuccessAlert :success-msg="authSuccess" />
+
+                            <v-text-field
+                                v-model="email"
+                                label="Email address"
+                                prepend-inner-icon="mdi-email-outline"
+                                variant="outlined"
+                                required
+                                class="mb-2"
+                            ></v-text-field>
+
+                            <v-btn
+                                type="submit"
+                                color="primary"
+                                block
+                                size="large"
+                                :loading="loading"
+                                :disabled="loading"
+                                class="mt-4"
+                            >
+                                Request Password Reset
+                            </v-btn>
+                        </form>
+                    </v-card-text>
+
+                    <v-card-actions class="justify-center">
+                        <NuxtLink to="/login">
+                            <v-btn text small>Back to Login</v-btn>
+                        </NuxtLink>
+                    </v-card-actions>
+                </v-card>
             </v-col>
-            <v-col></v-col>
         </v-row>
-      </v-container>
-    </div>
-  </template>
+    </v-container>
+</template>
   
   <script setup >
   definePageMeta({

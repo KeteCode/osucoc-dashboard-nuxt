@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-    import { useChangeCase } from '@vueuse/integrations/useChangeCase';
+    import { capitalCase } from 'change-case';
 
     definePageMeta({
         middleware: 'auth',
@@ -19,6 +19,6 @@
     const tableName = route.params.table;
     const pageTitle = computed(() => {
         const spacedName = tableName.replace(/_/g, ' ');
-        return useChangeCase(spacedName, 'capitalCase').value;
+        return capitalCase(spacedName);
     })
 </script>

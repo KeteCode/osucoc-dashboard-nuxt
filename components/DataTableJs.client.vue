@@ -49,25 +49,35 @@
             </v-row>
         </div>
         
-        <DataTable :columns="localTableHeaders" 
-            :data="data" 
-            ref="table"
-            @select="selectCallback"
-            @deselect="selectCallback"
-            class="display"
-            :options="{
-                pageLength: 50,
-                lengthChange: false,
-                select: { style: 'multiple' },
-                scrollX: true,
-                scrollY: 'calc(100vh - 300px)',
-                dom: 'Bftip',
-            }"
-        >
-        </DataTable>
+        <div v-if="pending">
+            Loading table data...
+        </div>
+        <div v-else-if="localTableHeaders.length > 0">
+            <DataTable
+                :columns="localTableHeaders" 
+                :data="data" 
+                ref="table"
+                @select="selectCallback"
+                @deselect="selectCallback"
+                class="display"
+                :options="{
+                    pageLength: 50,
+                    lengthChange: false,
+                    select: { style: 'multiple' },
+                    scrollX: true,
+                    scrollY: 'calc(100vh - 300px)',
+                    dom: 'Bftip',
+                }"
+            >
+            </DataTable>
+        </div>
+        <div v-else>
+            No data found for this table.
+        </div>
     </div>
 </template>
 <script setup>
+    import { watch } from 'vue';
     import DataTablesCore from 'datatables.net';
     import DataTable from 'datatables.net-vue3';
     import Select from 'datatables.net-select';
@@ -109,7 +119,7 @@
     const isRowActionProcessing = ref(false);
 
     // Fetch initial data
-    const { data, error } = await useAsyncData(
+    const { data, pending, error } = useAsyncData(
       `table-${props.supabaseTableName}`,
       async () => {
         const { data } = await client.from(props.supabaseTableName).select('*').limit(1000);
@@ -119,18 +129,20 @@
 
     if (error.value) console.error("Error fetching data:", error.value);
 
-    // Setup table headers and template object once data is loaded
-    if (data.value && data.value.length > 0) {
-        const firstRow = toRaw(data.value[0]);
-        localTableHeaders.value = Object.keys(firstRow).map(key => ({
-            title: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Prettify titles
-            data: key
-        }));
-        tableObjectTemplate.value = Object.keys(firstRow).reduce((acc, key) => {
-            acc[key] = '';
-            return acc;
-        }, {});
-    }
+    // Watch for the data to become available, then generate headers
+    watch(data, (newData) => {
+        if (newData && newData.length > 0) {
+            const firstRow = toRaw(newData[0]);
+            localTableHeaders.value = Object.keys(firstRow).map(key => ({
+                title: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Prettify titles
+                data: key
+            }));
+            tableObjectTemplate.value = Object.keys(firstRow).reduce((acc, key) => {
+                acc[key] = '';
+                return acc;
+            }, {});
+        }
+    }, { immediate: true }); // Use immediate to run on initial load
     
     onMounted(() => {
         if (table.value) {

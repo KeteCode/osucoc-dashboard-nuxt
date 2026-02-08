@@ -1,19 +1,15 @@
 <template>
     <div id="app">
-        
-        <auto-scroll :loop="true" :loop-up="true" :slow="false">
-            <div class="text-h1 font-weight-bold" v-for="member in data" >
-                <section id="names">
-                    {{ useChangeCase(member.name, 'capitalCase').value }}
-                </section>
-                
-            </div>
-        </auto-scroll>
+        <div class="text-h1 font-weight-bold" v-for="member in data" >
+            <section id="names">
+                {{ capitalCase(member.name) }}
+            </section>
+        </div>
     </div>
 </template>
 
 <script setup>
-    import { useChangeCase } from '@vueuse/integrations/useChangeCase';
+    import { capitalCase } from 'change-case';
 
     definePageMeta({
        

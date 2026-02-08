@@ -33,6 +33,10 @@ const items = ref([
     value: '/view/member_attendance_count',
   },
   {
+    title: 'Attendance Report',
+    value: '/attendance-report',
+  },
+  {
     title: 'Weekly Outreach',
     value: '/weeklyOutreach', // This is a custom page, not a table view
   },

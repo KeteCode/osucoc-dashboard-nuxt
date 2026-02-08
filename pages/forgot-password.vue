@@ -39,6 +39,11 @@
   const loading = ref(false)
   const authSuccess = ref('')
   const authError = ref('')
+
+  watch(email, () => {
+    authError.value = '';
+    authSuccess.value = '';
+  });
   
   const resetPassword = async () => {
     loading.value = true
@@ -48,24 +53,10 @@
     if (error) {
       loading.value = false
       authError.value = 'Invalid email credential'
-      setTimeout(() => {
-        authError.value = ''
-      }, 5000)
     }
     else {
       loading.value = false
-      authSuccess.value = `We've sent your an email.`
-      setTimeout(() => {
-        authSuccess.value = ''
-      }, 5000)
+      authSuccess.value = `We've sent you an email.`
     }
   }
-  
-  const clearError = () => {
-    authError.value = '';
-  };
-  
-  const clearSuccess = () => {
-    authSuccess.value = '';
-  };
   </script>

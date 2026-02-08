@@ -1,62 +1,48 @@
 <template>
-    <div>
-      
-        <!-- <NuxtLink :to=item.value>
-          <v-list
-          :items="items"
-        >
-      </v-list>
-        </NuxtLink> -->
-        <v-list>
-          <v-list-item v-for="item in items" :key="item.title">
-              <NuxtLink :to=item.value>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </NuxtLink>
-          </v-list-item>
-        </v-list>
-
-
-      
-    </div>
+    <v-list>
+      <v-list-item v-for="item in items" :key="item.title">
+          <NuxtLink :to="item.value">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </NuxtLink>
+      </v-list-item>
+    </v-list>
 </template>
-<script>
-  export default {
-    data: () => ({
-      items: [
-      {
-          title: 'Church Members',
-          value: 'churchmembers',
-        },
-        {
-          title: 'Announcements',
-          value: 'stops',
-        },
-        {
-          title: 'Visitors',
-          value: 'churchvisitors',
-        },
-        {
-          title: 'Order of Worship',
-          value: 'routes',
-        },
-        {
-          title: 'Attendance Dashboard',
-          value: 'attendancedashboard',
-        },
-        {
-          title: 'Weekly Outreach',
-          value: 'weeklyoutreach',
-        },
-        {
-          title: 'Users',
-          value: 'users',
-        },
-        {
-          title: 'Logout',
-          value: 'logout',
-        }
-        
-      ],
-    }),
+
+<script setup>
+import { ref } from 'vue';
+
+const items = ref([
+  {
+    title: 'Church Members',
+    value: '/view/church_members',
+  },
+  {
+    title: 'Announcements',
+    value: '/view/announcements', // Corrected from 'stops'
+  },
+  {
+    title: 'Visitors',
+    value: '/view/church_visitors',
+  },
+  {
+    title: 'Order of Worship',
+    value: '/view/order_of_worship', // Corrected from 'routes'
+  },
+  {
+    title: 'Attendance Dashboard',
+    value: '/view/member_attendance_count',
+  },
+  {
+    title: 'Weekly Outreach',
+    value: '/weeklyOutreach', // This is a custom page, not a table view
+  },
+  {
+    title: 'Users',
+    value: '/view/users', // Corrected from 'users' page to /view/users table
+  },
+  {
+    title: 'Logout',
+    value: '/logout',
   }
+]);
 </script>

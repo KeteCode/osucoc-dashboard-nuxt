@@ -39,37 +39,31 @@
   const loading = ref(false)
   const authSuccess = ref('')
   const authError = ref('')
+
+  watch([password, passwordConfirm], () => {
+    authError.value = '';
+    authSuccess.value = '';
+  });
   
   const updatepassword = async () => {
-    if (password.value !== passwordConfirm.value) return authError.value = 'Password mismatch!';
+    if (password.value !== passwordConfirm.value) {
+      authError.value = 'Password mismatch!';
+      return;
+    }
     loading.value = true
     const { error }  = await client.auth.updateUser({
       password: password.value
     })
-    await client.auth.signOut()
+    
     if (error) {
       loading.value = false
-      authError.value = 'Failed to fetch'
-      setTimeout(() => {
-        authError.value = ''
-      }, 5000)
+      authError.value = 'Failed to update password.'
     }
     else {
       loading.value = false
-      authSuccess.value = `Password changed`
-      setTimeout(() => {
-        authSuccess.value = ''
-        navigateTo('/login')
-      }, 5000)
+      authSuccess.value = `Password changed successfully! Redirecting to login...`
+      await client.auth.signOut()
+      setTimeout(() => navigateTo('/login'), 2000) // Keep a short delay to allow user to read success message
     }
   }
-  
-  const clearError = () => {
-    authError.value = '';
-  };
-  
-  const clearSuccess = () => {
-    authSuccess.value = ''
-    navigateTo('/login')
-  };
   </script>

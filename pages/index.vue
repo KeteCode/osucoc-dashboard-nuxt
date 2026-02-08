@@ -1,13 +1,13 @@
 <template>
-    <div>
-      <NuxtWelcome />
-    </div>
+  <div>
+    <!-- Page content is empty because we are redirecting -->
+  </div>
 </template>
+
 <script setup>
   definePageMeta({
       middleware: 'auth',
   });
-  useHead({
-      title: "Login | supaAuth",
-  });
+  
+  navigateTo('/view/member_attendance_count', { replace: true });
 </script>

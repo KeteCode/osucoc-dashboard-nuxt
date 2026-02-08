@@ -53,6 +53,10 @@
         }
     });
 
+    watch([email, password], () => {
+        authError.value = "";
+    });
+
     const login = async () => {
         loading.value = true;
         const { error } = await client.auth.signInWithPassword({
@@ -62,13 +66,6 @@
         if (error) {
             loading.value = false;
             authError.value = "Invalid login credentials";
-            setTimeout(() => {
-                authError.value = "";
-            }, 5000);
         }
-    };
-
-    const clearError = () => {
-        authError.value = "";
     };
 </script>

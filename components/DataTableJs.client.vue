@@ -1,7 +1,7 @@
 <template>
   <div id="vue3-easy-data-table">
     <div class="controlPanel">
-      <v-row>
+      <v-row align="center">
         <!-- Add Record Dialog -->
         <v-col cols="auto">
           <v-dialog width="auto" v-model="showAddDialog">
@@ -64,6 +64,13 @@
                 {{ allItemsSelected ? 'Deselect All' : 'Select All' }}
             </v-btn>
         </v-col>
+
+        <!-- Selection Count -->
+        <v-col cols="auto" v-if="selectedItems.length > 0">
+          <v-chip color="primary" label>
+            {{ selectedItems.length }} item(s) selected
+          </v-chip>
+        </v-col>
         
         <!-- Search Field -->
         <v-col>
@@ -72,6 +79,7 @@
             label="Search..."
             dense
             clearable
+            hide-details
           ></v-text-field>
         </v-col>
       </v-row>
@@ -82,11 +90,9 @@
       :headers="headers"
       :items="items"
       v-model:items-selected="selectedItems"
-      @click-row="onRowClick"
       :loading="pending"
       :search-value="searchValue"
       rows-per-page="50"
-      show-index
       buttons-pagination
       alternating
       table-class-name="customize-table"
@@ -133,27 +139,18 @@
   watch(data, (newData) => {
       if (newData && newData.length > 0) {
           const firstRow = toRaw(newData[0]);
-          headers.value = Object.keys(firstRow).map(key => ({
+          const dynamicHeaders = Object.keys(firstRow).map(key => ({
               text: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
               value: key,
               sortable: true
           }));
+          headers.value = [ ...dynamicHeaders];
           tableObjectTemplate.value = Object.keys(firstRow).reduce((acc, key) => ({ ...acc, [key]: '' }), {});
           items.value = newData;
       }
   }, { deep: true, immediate: true });
 
   if (error.value) console.error("Error fetching data:", error.value);
-
-  const onRowClick = (item) => {
-    const itemId = item[props.supabaseTableId];
-    const index = selectedItems.value.findIndex(selectedItem => selectedItem[props.supabaseTableId] === itemId);
-    if (index === -1) {
-      selectedItems.value.push(item);
-    } else {
-      selectedItems.value.splice(index, 1);
-    }
-  };
 
   const allItemsSelected = computed(() => {
     return selectedItems.value.length === items.value.length && items.value.length > 0;
@@ -275,6 +272,10 @@
   
   --easy-table-body-even-row-font-color: #373737;
   --easy-table-body-even-row-background-color: #f8f8f8;
+  
+  /* Style for selected rows */
+  --easy-table-body-row-selected-background-color: #dbe9ff;
+  --easy-table-body-row-selected-font-color: #2d3a4f;
   
   --easy-table-body-item-padding: 10px 15px;
   

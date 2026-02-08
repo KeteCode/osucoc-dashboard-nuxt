@@ -15,18 +15,10 @@
     "nuxt": "^3.6.2"
   },
   "dependencies": {
-    "@nuxtjs/supabase": "^0.3.8",
     "@invictus.codes/nuxt-vuetify": "^0.3.0",
+    "@nuxtjs/supabase": "^0.3.8",
     "@vueuse/integrations": "^10.4.1",
     "change-case": "^4.1.2",
-    "datatables.net": "^1.13.5",
-    "datatables.net-buttons": "^2.4.1",
-    "datatables.net-buttons-bs4": "^2.4.1",
-    "datatables.net-buttons-dt": "^2.4.1",
-    "datatables.net-dt": "^1.13.5",
-    "datatables.net-editor": "^2.2.2",
-    "datatables.net-select": "^1.7.0",
-    "datatables.net-select-dt": "^1.7.0",
-    "datatables.net-vue3": "^2.1.2"
+    "vue3-easy-data-table": "^1.5.47"
   }
 }

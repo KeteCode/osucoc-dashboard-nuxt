@@ -3,7 +3,7 @@
     <div class="controlPanel">
       <v-row align="center">
         <!-- Add Record Dialog -->
-        <v-col cols="auto">
+        <v-col cols="auto" v-if="!disableCrud">
           <v-dialog width="auto" v-model="showAddDialog">
             <template v-slot:activator="{ props }">
               <v-btn color="primary" v-bind="props">Add</v-btn>
@@ -17,7 +17,7 @@
         </v-col>
 
         <!-- Edit Record Dialog -->
-        <v-col cols="auto">
+        <v-col cols="auto" v-if="!disableCrud">
           <v-dialog width="auto" v-model="showEditDialog">
             <template v-slot:activator="{ props }">
               <v-btn color="primary" v-bind="props" :disabled="selectedItems.length !== 1">Edit</v-btn>
@@ -33,7 +33,7 @@
         </v-col>
 
         <!-- Delete Confirmation Dialog -->
-        <v-col cols="auto">
+        <v-col cols="auto" v-if="!disableCrud">
           <v-dialog transition="dialog-top-transition" width="auto" v-model="showDeleteDialog">
             <template v-slot:activator="{ props }">
               <v-btn color="warning" v-bind="props" :disabled="selectedItems.length === 0">Delete</v-btn>
@@ -114,7 +114,9 @@
 
   const props = defineProps({
       supabaseTableName: { type: String, required: true },
-      supabaseTableId: { type: String, default: 'id' }
+      supabaseTableId: { type: String, default: 'id' },
+      filterYear: { type: Number, default: null },
+      disableCrud: { type: Boolean, default: false }
   });
 
   const client = useSupabaseClient();
@@ -131,9 +133,25 @@
   const isProcessing = ref(false);
   
   const { data, pending, error, refresh } = useAsyncData(
-    `table-${props.supabaseTableName}`,
-    async () => client.from(props.supabaseTableName).select('*').limit(1000).then(res => res.data),
-    { server: false } 
+    `table-${props.supabaseTableName}-${props.filterYear}`, // Dynamic key to refetch on year change
+    async () => {
+      let response;
+      // If the table is the special attendance count, call the RPC function
+      if (props.supabaseTableName === 'member_attendance_count' && props.filterYear) {
+        response = await client.rpc('get_member_attendance_by_year', { target_year: props.filterYear });
+      } else {
+        // Otherwise, perform a standard select query
+        response = await client.from(props.supabaseTableName).select('*');
+      }
+
+      const { data, error } = response;
+      if (error) throw error;
+      return data;
+    },
+    { 
+      server: false,
+      watch: [() => props.filterYear] // Watch the prop for changes to re-trigger the fetch
+    }
   );
 
   watch(data, (newData) => {

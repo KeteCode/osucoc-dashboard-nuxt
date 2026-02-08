@@ -94,6 +94,13 @@ This document tracks the audit and refactoring process for the `osucoc-dashboard
 ## Directory: `middleware/`
 
 ### 1. Simplify `auth.js` Navigation
--   **Status:** Pending
+-   **Status:** Completed
 -   **Issue:** Uses `useRouter().push()`, which can be replaced with the more idiomatic `navigateTo()` for middleware.
 -   **Solution:** Replace `router.push('/login');` with `return navigateTo('/login');`.
+
+## Directory: `server/`
+
+### 1. `tsconfig.json`
+-   **Status:** No Changes Needed
+-   **Issue:** None. Standard Nuxt 3 server-side TypeScript configuration.
+-   **Solution:** No changes proposed.

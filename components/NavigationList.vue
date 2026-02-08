@@ -23,17 +23,29 @@
   export default {
     data: () => ({
       items: [
+      {
+          title: 'Church Members',
+          value: 'churchmembers',
+        },
         {
-          title: 'Bus Stops',
+          title: 'Announcements',
           value: 'stops',
         },
         {
-          title: 'Bus Routes',
+          title: 'Visitors',
+          value: 'churchvisitors',
+        },
+        {
+          title: 'Order of Worship',
           value: 'routes',
         },
         {
-          title: 'Drivers',
-          value: 'drivers',
+          title: 'Attendance Dashboard',
+          value: 'attendancedashboard',
+        },
+        {
+          title: 'Weekly Outreach',
+          value: 'weeklyoutreach',
         },
         {
           title: 'Users',

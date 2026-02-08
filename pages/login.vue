@@ -4,7 +4,7 @@
             <v-row no-gutters>
                 <v-col></v-col>
                 <v-col>
-                    <h1>Station Master</h1>
+                    <h1>Osu COC Admin Portal</h1>
                     <v-sheet class="ma-2 pa-2">
                         <div>
                             <h3>Sign in</h3>
@@ -49,20 +49,16 @@
 
     watchEffect(async () => {
         if (user.value) {
-            console.log("User is logged in");
-            console.log(user)
             router.push("/");
         }
     });
 
     const login = async () => {
-        console.log("Logging in user");
         loading.value = true;
         const { error } = await client.auth.signInWithPassword({
             email: email.value,
             password: password.value,
         });
-        console.log("Login in user");
         if (error) {
             loading.value = false;
             authError.value = "Invalid login credentials";

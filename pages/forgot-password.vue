@@ -4,7 +4,7 @@
         <v-row>
             <v-col></v-col>
             <v-col>
-                <h1>Station Master</h1>
+                <h1>Osu COC Admin Portal</h1>
                 <h3 >Forgot password</h3>
                 <form @submit.prevent="resetPassword">
                     <ErrorAlert :error-msg="authError" @clearError="clearError" />

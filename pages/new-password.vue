@@ -3,7 +3,7 @@
         <v-col> </v-col>
         <v-col>
             <div >
-                <h1>Station Master</h1>
+                <h1>Osu COC Admin Portal</h1>
       <h3 >New password</h3>
       <form @submit.prevent="updatepassword">
         <ErrorAlert :error-msg="authError" @clearError="clearError" />

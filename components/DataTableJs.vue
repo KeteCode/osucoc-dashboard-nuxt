@@ -58,13 +58,15 @@
                                 </template> 
                             </v-card-text>
                                 <v-card-actions class="justify-end">
-                                    <v-btn color="primary" variant="tonal" @click="editSupabaseRow"
+                                    
+                                    <v-btn :disabled="isRowActionProcessing" color="primary" variant="tonal" @click="editSupabaseRow"
                                         >Save</v-btn
                                     >
-                                    <v-btn variant="text" @click="isActive.value = false"
+                                    <v-btn :disabled="isRowActionProcessing" variant="text" @click="isActive.value = false"
                                         >Close</v-btn
                                     >
                             </v-card-actions>
+                            
                         </v-card>
                         </template>
                     </v-dialog>
@@ -92,10 +94,10 @@
                                 </DataTable>
                             </v-card-text>
                             <v-card-actions class="justify-end">
-                            <v-btn color="danger" variant="tonal" @click="deleteSupabaseRows"
+                            <v-btn :disabled="isRowActionProcessing" color="danger" variant="tonal" @click="deleteSupabaseRows"
                                 >Yes Delete</v-btn
                             >
-                            <v-btn color="primary" variant="tonal" @click="isActive.value = false"
+                            <v-btn :disabled="isRowActionProcessing" color="primary" variant="tonal" @click="isActive.value = false"
                                 >No Close</v-btn
                             >
                             </v-card-actions>
@@ -157,6 +159,11 @@
             type: Array,
             required: false
         },
+        excludedColumns: {
+            type: Array,
+            required: false,
+            default: []
+        },
         supabaseColumns: {
             type: String,
             required: false,
@@ -189,6 +196,7 @@
     let showEditDialog = ref(false);
     let showDeleteDialog = ref(false);
     let showAddDialog = ref(false);
+    let isRowActionProcessing = ref(false);
 
     let dt;
     let editor;
@@ -204,7 +212,7 @@
         /* this.$refs.table.dt()
         .on( 'select', function ( e, dt, type, indexes ) {
             var rowData = dt.rows( indexes ).data().toArray();
-            console.log(rowData);
+            
         } ) */
         
     }); 
@@ -216,18 +224,22 @@
     let {data} =  await useAsyncData('awayBusDrivers', async () => {
         const { data } = await client.from(props.supabaseTableName).select(queryColumns).limit(1000)
         //tableObjectTemplate =  clearObject(data[0])
-        console.log("Data total ",data.length)
+        
         return data;
     })
     tableObjectTemplate = clearObject(markRaw(data.value[0]))
     // delete id key from tableObjectTemplate
-    delete tableObjectTemplate[props.supabaseTableId]
-    delete tableObjectTemplate["created_at"]
+    //delete tableObjectTemplate[props.supabaseTableId]
+    //delete tableObjectTemplate["created_at"]
+    
+    // checking for excluded columns and removing them from tableObjectTemplate
+    props.excludedColumns.forEach(column => {
+        
+        delete tableObjectTemplate[column]
+    });
 
     // generate modal form if data has content
     const generateModalForm = (action) => {
-        console.log('this is the action',action)
-        console.log('this is the data first value',toRaw(data.value[0]))
         if(data.value.length > 0){
             return getForm(toRaw(data.value[0]),action)
         }
@@ -251,26 +263,23 @@
     // get count of all drivers using useAsyncData
     /* const {data:totalItems, pending, error} =  await useAsyncData('awayBusDriversCount', async () => {
         const { data, count,error } = await client.from('awayBusDrivers').select('*',{count:'exact'})
-        console.log('total count ',count)
+        
         return count;
     }) */
     
 
     async function getNextBatchOfDrivers({ page, itemsPerPage, sortBy }) {
-        console.log("current page",page)
-        console.log("items",itemsPerPage)
+        
         const { data } = await client.from('awayBusDrivers').select().range((page-1)*itemsPerPage,itemsPerPage.value).limit(itemsPerPage).order('id', { ascending: true })
         drivers.value = data;
-        console.log(data)
         //return data;
     }
 
     async function getAllDrivers() {
-        console.log('this is page', currentPage.value) 
         loading.value = true;
         let result =  await useAsyncData('awayBusDrivers', async () => {
             const { data } = await client.from('awayBusDrivers').select().range(currentPage.value,(currentPage.value ) * itemsPerPage.value)//.range(currentPage.value, currentPage.value+itemsPerPage.value)//.limit(itemsPerPage.value).range((currentPage.value - 1) * itemsPerPage.value).order('created_at', { ascending: false })
-            // console.log(data)
+            
             drivers.value = data;
             return data;
         })
@@ -292,10 +301,9 @@
             { name, phoneNumber, carNumber, station, carColour, carModel, isVerified }
         ])
         if (error) {
-            console.log(error)
+            
         }
         else {
-            console.log(data[0])
             return data;
         }
     }
@@ -341,11 +349,6 @@
     //const { data, error } = await client.from('awayBusDrivers').select().order('created_at')
 
     function action() {
-        
-      //alert(12);
-      //console.log(table.value.rows().data())
-      console.log(dt)
-      console.log(dt.rows({ selected: true }).data()); 
       dt.rows({ selected: true }).every(function () {
             let idx = data.value.indexOf(this.data());
             data.value.splice(idx, 1);
@@ -356,18 +359,13 @@
         .create(); */
     }
     function selectCallback(data, type, selected) {
-        //console.log(type)
-        console.log(); 
-        console.log(toRaw(dt.rows({ selected: true }).data().toArray()[0]))//
         selectedRows.value = toRaw(dt.rows({ selected: true }).data().toArray());
         tableObject = toRaw(dt.rows({ selected: true }).data().toArray()[0]);
         
         //dt.buttons().disable();
-        //console.log(selectedRows)
  
         if ( selectedRows.length > 0 ) {
             dt.buttons().enable();
-            console.log(selectedRows[0].created_at)
         }
         else {
             dt.buttons().disable();
@@ -392,10 +390,8 @@
         )
         .select()
         if (error) {
-            console.log(error)
         }
         else {
-            console.log(data)
             //selectedRows.value[0] = data;
             // update dt row
             dt.row.add(data[0]).draw();
@@ -407,42 +403,43 @@
     }
 
     async function editSupabaseRow(){
-        console.log(tableObject.name)
+        isRowActionProcessing.value = true;
         //let selectedRows = dt.rows({ selected: true }).data().toArray();
         const { data, error } = await client
         .from(props.supabaseTableName)
         .upsert(tableObject)
         .select()
-        selectedRows.value[0] = data;
+        //selectedRows.value[0] = data;
         if (error) {
-            console.log(error)
+            // show error dialog
+            isRowActionProcessing.value = false;
         }
         else {
-            console.log(data)
             selectedRows = data;
             showEditDialog.value = false;
             // update dt row
             dt.row({ selected: true }).data(data[0]);
+            isRowActionProcessing.value = false;
             return data;
         }
         
     }
     async function deleteSupabaseRows(){
-            //console.log(selectedRows.value[0][props.supabaseTableId])
-            console.log("Starting deletion process",selectedRows.value[0][props.supabaseTableId])
+            isRowActionProcessing.value = true;
             const { error } = await client
             .from(props.supabaseTableName)
             .delete()
             .eq(props.supabaseTableId, selectedRows.value[0][props.supabaseTableId])
             if (error) {
-                console.log(error)
+                // show error dialog
+                isRowActionProcessing.value = false;
             }
             else {
-                console.log('deleted')
                 // update dt
                 dt.rows({ selected: true }).remove().draw();
                 // dismiss dialog
                 showDeleteDialog.value = false;
+                isRowActionProcessing.value = false;
             }     
     }
 

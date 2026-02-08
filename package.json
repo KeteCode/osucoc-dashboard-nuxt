@@ -4,19 +4,21 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "dev:local": "nuxt dev --dotenv .env.local",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "nuxt start"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@nuxtjs/supabase": "^0.3.8",
     "@types/node": "^18.16.19",
     "nuxt": "^3.6.2"
   },
   "dependencies": {
+    "@nuxtjs/supabase": "^0.3.8",
     "@invictus.codes/nuxt-vuetify": "^0.3.0",
+    "@vueuse/integrations": "^10.4.1",
+    "change-case": "^4.1.2",
     "datatables.net": "^1.13.5",
     "datatables.net-buttons": "^2.4.1",
     "datatables.net-buttons-bs4": "^2.4.1",
@@ -25,6 +27,7 @@
     "datatables.net-editor": "^2.2.2",
     "datatables.net-select": "^1.7.0",
     "datatables.net-select-dt": "^1.7.0",
-    "datatables.net-vue3": "^2.1.2"
+    "datatables.net-vue3": "^2.1.2",
+    "vue-plugin-autoscroll": "^0.1.4"
   }
 }

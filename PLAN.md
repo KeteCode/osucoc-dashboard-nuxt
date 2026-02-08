@@ -78,7 +78,7 @@ This document tracks the audit and refactoring process for the `osucoc-dashboard
 ## Directory: `layouts/`
 
 ### 1. Refactor `default.vue` to Composition API
--   **Status:** Pending
+-   **Status:** Completed
 -   **Issue:** Uses Options API (`data()`, `watch`), which is outdated for Nuxt 3 projects. The `group` watch property is likely redundant.
 -   **Solution:**
     1.  Convert to `<script setup>`.
@@ -90,3 +90,10 @@ This document tracks the audit and refactoring process for the `osucoc-dashboard
 -   **Status:** No Changes Needed
 -   **Issue:** None
 -   **Solution:** No changes proposed as it's already minimal and uses `<slot/>` effectively.
+
+## Directory: `middleware/`
+
+### 1. Simplify `auth.js` Navigation
+-   **Status:** Pending
+-   **Issue:** Uses `useRouter().push()`, which can be replaced with the more idiomatic `navigateTo()` for middleware.
+-   **Solution:** Replace `router.push('/login');` with `return navigateTo('/login');`.

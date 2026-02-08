@@ -6,7 +6,7 @@
       <v-app-bar
         color="primary"
         prominent
-        absolute=""
+        :absolute="true"
       >
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
@@ -38,18 +38,16 @@
     </v-layout>
   </v-card>
 </template>
-<script>
-  export default {
-    data: () => ({
-      drawer: false,
-      group: null,
-      
-    }),
 
-    watch: {
-      group () {
-        this.drawer = false
-      },
-    },
-  }
+<script setup>
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+const drawer = ref(false);
+const route = useRoute();
+
+// Close the drawer when the route changes
+watch(() => route.path, () => {
+  drawer.value = false;
+});
 </script>

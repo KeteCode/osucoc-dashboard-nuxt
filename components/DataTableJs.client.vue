@@ -46,6 +46,24 @@
             />
           </v-dialog>
         </v-col>
+
+        <!-- Download Buttons -->
+        <v-col cols="auto">
+            <v-btn @click="downloadCSV" :disabled="selectedItems.length === 0">Download CSV</v-btn>
+        </v-col>
+        <v-col cols="auto">
+            <v-btn @click="downloadPDF" :disabled="selectedItems.length === 0">Download PDF</v-btn>
+        </v-col>
+
+        <!-- Select All Button -->
+        <v-col cols="auto">
+            <v-btn 
+                @click="toggleSelectAll"
+                :disabled="items.length === 0"
+            >
+                {{ allItemsSelected ? 'Deselect All' : 'Select All' }}
+            </v-btn>
+        </v-col>
         
         <!-- Search Field -->
         <v-col>
@@ -63,7 +81,7 @@
       v-if="!pending"
       :headers="headers"
       :items="items"
-      :items-selected="selectedItems"
+      v-model:items-selected="selectedItems"
       @click-row="onRowClick"
       :loading="pending"
       :search-value="searchValue"
@@ -78,9 +96,11 @@
 </template>
 
 <script setup>
-  import { ref, watch, toRaw } from 'vue';
+  import { ref, watch, toRaw, computed } from 'vue';
   import EasyDataTable from 'vue3-easy-data-table';
   import 'vue3-easy-data-table/dist/style.css';
+  import jsPDF from 'jspdf';
+  import autoTable from 'jspdf-autotable';
   
   import AddRecordForm from './AddRecordForm.vue';
   import EditRecordForm from './EditRecordForm.vue';
@@ -133,6 +153,63 @@
     } else {
       selectedItems.value.splice(index, 1);
     }
+  };
+
+  const allItemsSelected = computed(() => {
+    return selectedItems.value.length === items.value.length && items.value.length > 0;
+  });
+
+  const toggleSelectAll = () => {
+    if (allItemsSelected.value) {
+      selectedItems.value = [];
+    } else {
+      selectedItems.value = [...items.value];
+    }
+  };
+
+  const downloadCSV = () => {
+    const headerKeys = headers.value.map(h => h.value);
+    const headerTitles = headers.value.map(h => h.text);
+    const csvContent = [
+      headerTitles.join(','),
+      ...selectedItems.value.map(item => 
+        headerKeys.map(key => {
+          let val = item[key];
+          if (typeof val === 'string' && val.includes(',')) {
+            return `"${val}"`;
+          }
+          return val;
+        }).join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${props.supabaseTableName}_selection.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    const head = [headers.value.map(h => h.text)];
+    const body = selectedItems.value.map(item => headers.value.map(h => item[h.value]));
+
+    autoTable(doc, {
+      head: head,
+      body: body,
+      startY: 20,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [38, 38, 38] },
+    });
+
+    doc.save(`${props.supabaseTableName}_selection.pdf`);
   };
 
   async function createItem(newItem) {

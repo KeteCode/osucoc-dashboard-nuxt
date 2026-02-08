@@ -9,9 +9,5 @@
   </template>
   
   <script setup >
-  defineProps({ successMsg: String })
-  const emit = defineEmits(['clearSuccess'])
-  const clearSuccess = () => {
-    emit('clearSuccess');
-  };
+    defineProps({ successMsg: String })
   </script>

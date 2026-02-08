@@ -47,7 +47,7 @@ This document tracks the audit and refactoring process for the `osucoc-dashboard
 ## Directory: `components/`
 
 ### 1. Cleanup Unused Components
--   **Status:** Pending
+-   **Status:** Completed
 -   **Files to Delete (3):**
     -   `components/login.vue`
     -   `components/AppHeader.vue`
@@ -56,14 +56,14 @@ This document tracks the audit and refactoring process for the `osucoc-dashboard
 -   **Solution:** Delete the unused component files.
 
 ### 2. Refactor `DataTableJs.vue` Monolith
--   **Status:** Pending
+-   **Status:** Completed
 -   **Issue:** A single component handles data fetching, table rendering, and all CRUD logic via modals, making it hard to maintain.
 -   **Solution:**
     1.  Break the component into smaller, focused child components: `AddRecordForm.vue`, `EditRecordForm.vue`, and `DeleteConfirmation.vue`.
     2.  Simplify `DataTableJs.vue` to orchestrate these child components, passing props and listening for events.
 
 ### 3. Refactor Alert Components
--   **Status:** Pending
+-   **Status:** Completed
 -   **Files to Modify (2):**
     -   `components/ErrorAlert.vue`
     -   `components/SuccessAlert.vue`
@@ -71,7 +71,22 @@ This document tracks the audit and refactoring process for the `osucoc-dashboard
 -   **Solution:** Remove the `emit` logic. The components should be purely presentational.
 
 ### 4. Modernize Syntax in `DataTableJs.vue`
--   **Status:** Pending
+-   **Status:** Completed
 -   **Issue:** Uses a legacy function expression for the `onMounted` hook.
 -   **Solution:** Update `onMounted` to use a modern arrow function.
 
+## Directory: `layouts/`
+
+### 1. Refactor `default.vue` to Composition API
+-   **Status:** Pending
+-   **Issue:** Uses Options API (`data()`, `watch`), which is outdated for Nuxt 3 projects. The `group` watch property is likely redundant.
+-   **Solution:**
+    1.  Convert to `<script setup>`.
+    2.  Replace `data` properties with `ref`.
+    3.  Remove the `group` property and its `watch` handler.
+    4.  Ensure `v-app-bar`'s `absolute` property is explicitly `true` (`:absolute="true"`) or removed if not needed.
+
+### 2. `auth.vue`
+-   **Status:** No Changes Needed
+-   **Issue:** None
+-   **Solution:** No changes proposed as it's already minimal and uses `<slot/>` effectively.

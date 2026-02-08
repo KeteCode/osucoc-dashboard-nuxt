@@ -8,8 +8,4 @@
 
 <script setup lang="ts">
 defineProps<{ errorMsg: String }>()
-const emit = defineEmits(['clearError'])
-const clearError = () => {
-  emit('clearError');
-};
 </script>

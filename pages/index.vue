@@ -9,5 +9,5 @@
       middleware: 'auth',
   });
   
-  navigateTo('/view/member_attendance_count', { replace: true });
+  navigateTo('/mark-attendance', { replace: true });
 </script>

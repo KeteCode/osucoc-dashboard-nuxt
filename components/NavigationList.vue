@@ -13,6 +13,10 @@ import { ref } from 'vue';
 
 const items = ref([
   {
+    title: 'Mark Attendance',
+    value: '/mark-attendance',
+  },
+  {
     title: 'Church Members',
     value: '/view/church_members',
   },
@@ -39,6 +43,10 @@ const items = ref([
   {
     title: 'Weekly Outreach',
     value: '/weeklyOutreach', // This is a custom page, not a table view
+  },
+  {
+    title: 'Invite User',
+    value: '/invite-user',
   },
   {
     title: 'Users',

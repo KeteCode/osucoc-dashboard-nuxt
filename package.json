@@ -21,6 +21,7 @@
     "change-case": "^4.1.2",
     "jspdf": "^4.1.0",
     "jspdf-autotable": "^5.0.7",
+    "vue": "^3.3.4",
     "vue3-easy-data-table": "^1.5.47"
   }
 }

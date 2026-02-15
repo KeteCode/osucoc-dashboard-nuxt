@@ -8,31 +8,15 @@
             Mark Attendance
           </v-card-title>
           <v-card-subtitle class="text-center mb-4">
-            <!-- Date Picker -->
-            <v-menu
-              v-model="dateMenu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="auto"
-            >
-              <template v-slot:activator="{ props }">
-                <v-text-field
-                  v-model="formattedMarkDate"
-                  label="Attendance Date"
-                  prepend-inner-icon="mdi-calendar"
-                  readonly
-                  v-bind="props"
-                  density="compact"
-                  variant="outlined"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="markDate"
-                @update:model-value="dateMenu = false"
-                color="primary"
-              ></v-date-picker>
-            </v-menu>
+            <!-- Native Date Picker -->
+            <v-text-field
+              v-model="markDate"
+              label="Attendance Date"
+              prepend-inner-icon="mdi-calendar"
+              type="date"
+              density="compact"
+              variant="outlined"
+            ></v-text-field>
           </v-card-subtitle>
 
           <v-card-text>
@@ -155,24 +139,12 @@ const responseMessage = ref('');
 const responseType = ref('success');
 
 // State for date picker and reports
-const markDate = ref(new Date());
-const dateMenu = ref(false);
+// Initialize with today's date in YYYY-MM-DD format
+const markDate = ref(new Date().toISOString().substr(0, 10));
 const reportLoading = ref(false);
 const tab = ref('present');
 const presentData = ref([]);
 const absentData = ref([]);
-
-const formattedMarkDate = computed(() => {
-  return markDate.value.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-});
-
-const formatDateForSupabase = (date) => {
-  return date.toISOString().split('T')[0];
-};
 
 const submitAttendance = async () => {
   if (!churchNumber.value) return;
@@ -183,7 +155,7 @@ const submitAttendance = async () => {
   try {
     const { data, error } = await client.rpc('mark_attendance', {
       member_church_number: churchNumber.value,
-      target_date: formatDateForSupabase(markDate.value), // Pass selected date
+      target_date: markDate.value, // Pass selected date string directly
     });
 
     if (error) throw error;
@@ -211,7 +183,8 @@ const fetchReportData = async (date) => {
 
   reportLoading.value = true;
   
-  const formattedDate = formatDateForSupabase(date);
+  // Date is already in YYYY-MM-DD format from the input type="date"
+  const formattedDate = date;
 
   try {
     const { data: present, error: presentError } = await client.rpc('get_attendance_by_date', { target_date: formattedDate });

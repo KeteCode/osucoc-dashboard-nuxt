@@ -10,28 +10,14 @@
     <!-- Date Picker Row -->
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-menu
-          v-model="dateMenu"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template v-slot:activator="{ props }">
-            <v-text-field
-              v-model="formattedDisplayDate"
-              label="Report Date"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="props"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="selectedDate"
-            @update:model-value="dateMenu = false"
-            color="primary"
-          ></v-date-picker>
-        </v-menu>
+        <v-text-field
+          v-model="selectedDate"
+          label="Report Date"
+          prepend-inner-icon="mdi-calendar"
+          type="date"
+          variant="outlined"
+          density="compact"
+        ></v-text-field>
       </v-col>
     </v-row>
 
@@ -80,31 +66,17 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import ReportDataTable from '~/components/ReportDataTable.vue';
 
 const client = useSupabaseClient();
 
-const selectedDate = ref(new Date());
-const dateMenu = ref(false);
+// Initialize with today's date in YYYY-MM-DD format
+const selectedDate = ref(new Date().toISOString().substr(0, 10));
 const tab = ref('present');
 const loading = ref(false);
 const presentData = ref([]);
 const absentData = ref([]);
-
-// Formats date for display in the text field (e.g., February 8, 2026)
-const formattedDisplayDate = computed(() => {
-  return selectedDate.value.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-});
-
-// Formats date for Supabase RPC (YYYY-MM-DD)
-const formatDateForSupabase = (date) => {
-  return date.toISOString().split('T')[0];
-};
 
 const fetchReportData = async (date) => {
   if (!date) return;
@@ -113,7 +85,8 @@ const fetchReportData = async (date) => {
   presentData.value = [];
   absentData.value = [];
   
-  const formattedDate = formatDateForSupabase(date);
+  // Date is already in YYYY-MM-DD format from the input type="date"
+  const formattedDate = date;
 
   try {
     const { data: present, error: presentError } = await client.rpc('get_attendance_by_date', { target_date: formattedDate });

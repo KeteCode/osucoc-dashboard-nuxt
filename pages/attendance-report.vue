@@ -151,7 +151,13 @@ const handleDelete = async (item) => {
   } catch (error) {
     console.error('Error removing attendance:', error);
     responseType.value = 'error';
-    responseMessage.value = `Error removing attendance: ${error.message}`;
+    
+    if (error.message && (error.message.includes('JWT') || error.message.includes('session'))) {
+        responseMessage.value = 'Your session has expired. Please log in again.';
+        setTimeout(() => navigateTo('/login'), 2000);
+    } else {
+        responseMessage.value = `Error removing attendance: ${error.message}`;
+    }
   } finally {
     loading.value = false;
   }

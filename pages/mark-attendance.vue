@@ -172,9 +172,16 @@ const submitAttendance = async () => {
     responseMessage.value = data;
 
   } catch (error) {
-    responseType.value = 'error';
-    responseMessage.value = `Error: ${error.message}. Please check the Church Number.`;
     console.error("Error marking attendance:", error);
+    responseType.value = 'error';
+    
+    if (error.message && (error.message.includes('JWT') || error.message.includes('session'))) {
+        responseMessage.value = 'Your session has expired. Please log in again.';
+        // Optional: Redirect to login after a delay or let the user navigate manually
+        setTimeout(() => navigateTo('/login'), 2000);
+    } else {
+        responseMessage.value = `Error: ${error.message}. Please check the Church Number.`;
+    }
   } finally {
     loading.value = false;
   }
@@ -238,7 +245,13 @@ const handleDelete = async (item) => {
   } catch (error) {
     console.error('Error removing attendance:', error);
     responseType.value = 'error';
-    responseMessage.value = `Error removing attendance: ${error.message}`;
+    
+    if (error.message && (error.message.includes('JWT') || error.message.includes('session'))) {
+        responseMessage.value = 'Your session has expired. Please log in again.';
+        setTimeout(() => navigateTo('/login'), 2000);
+    } else {
+        responseMessage.value = `Error removing attendance: ${error.message}`;
+    }
   } finally {
     reportLoading.value = false;
   }

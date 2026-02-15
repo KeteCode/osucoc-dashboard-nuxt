@@ -8,7 +8,10 @@ export default defineNuxtConfig({
     lab: true
   },
   nitro: {
-    preset: 'vercel'
+    preset: 'vercel',
+    externals: {
+      inline: ['vue', '@vue/server-renderer', 'vue-demi']
+    }
   },
   build: {
     transpile: ['vuetify']

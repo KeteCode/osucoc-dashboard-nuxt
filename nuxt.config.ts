@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     externals: {
-      inline: ['vue', '@vue/server-renderer', 'vue-demi']
+      inline: process.env.NODE_ENV === 'production' ? ['vue', '@vue/server-renderer', 'vue-demi'] : []
     }
   },
   build: {

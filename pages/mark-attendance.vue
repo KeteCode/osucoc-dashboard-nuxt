@@ -95,6 +95,8 @@
                   :items="presentData"
                   :loading="reportLoading"
                   table-name="present_members"
+                  show-delete
+                  @delete-item="handleDelete"
                 />
                 <v-alert v-else-if="!reportLoading" type="info">No attendance records found for this date.</v-alert>
                 <v-progress-circular v-if="reportLoading" indeterminate color="primary"></v-progress-circular>
@@ -196,6 +198,47 @@ const fetchReportData = async (date) => {
     absentData.value = absent;
   } catch (error) {
     console.error('Error fetching report data:', error.message);
+  } finally {
+    reportLoading.value = false;
+  }
+};
+
+const handleDelete = async (item) => {
+  if (!confirm('Are you sure you want to remove this attendance record?')) return;
+
+  // Check 'Church Number' (from schema), then snake_case fallback
+  const memberId = item['Church Number'] || item.church_member_church_number || item.church_number;
+  
+  reportLoading.value = true;
+  responseMessage.value = '';
+
+  try {
+    let query = client.from('attendance').delete();
+
+    if (memberId) {
+      // Best way: Match business key and date
+      const targetDate = markDate.value;
+      query = query
+        .eq('church_member_church_number', memberId)
+        .gte('created_at', `${targetDate}T00:00:00`)
+        .lte('created_at', `${targetDate}T23:59:59`);
+    } else if (item.id) {
+      // Fallback: Match by primary key if available
+      query = query.eq('id', item.id);
+    } else {
+      throw new Error('Could not identify member to delete.');
+    }
+
+    const { error } = await query;
+    if (error) throw error;
+
+    responseType.value = 'success';
+    responseMessage.value = 'Attendance record removed successfully.';
+    await fetchReportData(markDate.value);
+  } catch (error) {
+    console.error('Error removing attendance:', error);
+    responseType.value = 'error';
+    responseMessage.value = `Error removing attendance: ${error.message}`;
   } finally {
     reportLoading.value = false;
   }

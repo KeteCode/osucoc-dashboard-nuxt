@@ -51,7 +51,17 @@
       buttons-pagination
       alternating
       table-class-name="customize-table"
-    />
+    >
+      <template #item-actions="item">
+        <v-btn
+          icon="mdi-delete"
+          variant="text"
+          color="error"
+          size="small"
+          @click="$emit('delete-item', item)"
+        ></v-btn>
+      </template>
+    </EasyDataTable>
   </div>
 </template>
 
@@ -65,20 +75,27 @@ import autoTable from 'jspdf-autotable';
 const props = defineProps({
     items: { type: Array, required: true },
     loading: { type: Boolean, default: false },
-    tableName: { type: String, default: 'report' }
+    tableName: { type: String, default: 'report' },
+    showDelete: { type: Boolean, default: false }
 });
+
+const emit = defineEmits(['delete-item']);
 
 const headers = ref([]);
 const selectedItems = ref([]);
 const searchValue = ref('');
 
-watch(() => props.items, (newItems) => {
+watch(() => [props.items, props.showDelete], ([newItems, showDelete]) => {
     if (newItems && newItems.length > 0) {
         headers.value = Object.keys(newItems[0]).map(key => ({
             text: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
             value: key,
             sortable: true
         }));
+        
+        if (showDelete) {
+          headers.value.push({ text: "Actions", value: "actions", sortable: false });
+        }
     } else {
         headers.value = [];
     }

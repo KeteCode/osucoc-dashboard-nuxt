@@ -92,7 +92,7 @@
       v-model:items-selected="selectedItems"
       :loading="pending"
       :search-value="searchValue"
-      rows-per-page="50"
+      :rows-per-page="100"
       buttons-pagination
       alternating
       table-class-name="customize-table"

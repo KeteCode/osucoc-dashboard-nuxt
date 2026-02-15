@@ -47,7 +47,7 @@
       v-model:items-selected="selectedItems"
       :loading="loading"
       :search-value="searchValue"
-      rows-per-page="25"
+      :rows-per-page="100"
       buttons-pagination
       alternating
       table-class-name="customize-table"

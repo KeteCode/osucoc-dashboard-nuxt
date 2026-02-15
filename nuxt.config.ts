@@ -6,8 +6,5 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/supabase','@invictus.codes/nuxt-vuetify',],
   vuetify: {
     lab: true
-  },
-  nitro: {
-    preset: 'vercel'
   }
 })

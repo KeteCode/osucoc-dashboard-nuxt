@@ -26,3 +26,6 @@ logs
 
 key.json
 *.sql
+supabase_backup_commands.md
+VM Control Implementation Plan.md
+VM Control Technical Spec.md

@@ -18,6 +18,12 @@
       <v-list-item :prepend-icon="item.icon" :title="item.title" :value="item.value"></v-list-item>
     </NuxtLink>
 
+    <!-- Streaming Section -->
+    <v-list-subheader>Streaming</v-list-subheader>
+    <NuxtLink v-for="item in streamingItems" :key="item.title" :to="item.value" class="nav-link">
+      <v-list-item :prepend-icon="item.icon" :title="item.title" :value="item.value"></v-list-item>
+    </NuxtLink>
+
     <!-- Logout -->
     <v-divider class="my-2"></v-divider>
     <NuxtLink to="/logout" class="nav-link">
@@ -85,6 +91,14 @@ const userItems = ref([
     title: 'Users',
     value: '/view/users',
     icon: 'mdi-account-cog-outline',
+  },
+]);
+
+const streamingItems = ref([
+  {
+    title: 'Stream Control',
+    value: '/streaming',
+    icon: 'mdi-video-input-component',
   },
 ]);
 </script>

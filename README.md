@@ -18,6 +18,10 @@ This is a modern, server-side rendered dashboard for the Osu Church of Christ, b
     -   Standard email/password login with a "Remember Me" option.
     -   OAuth login with Google.
     -   **Invite-Only System:** A secure, server-side feature that allows administrators to invite new users by email.
+-   **Stream Control (GCP):**
+    -   A dedicated page to manage the Google Cloud VM running the Restreamer service.
+    -   Allows administrators to start and stop the VM directly from the dashboard.
+    -   Provides real-time status polling and displays a visual countdown timer for the VM's 6-hour auto-shutdown window.
 -   **Modern UI/UX:**
     -   Clean, modern interface built with Vuetify 3.
     -   Redesigned login and password recovery pages.

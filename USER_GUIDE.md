@@ -58,7 +58,25 @@ You can view and download lists of who was present or absent for any specific da
 
 ---
 
-## 4. Key Differences from Old System
+## 4. Managing the Live Stream
+
+The "Stream Control" page allows you to turn the live streaming server on and off. This saves costs by ensuring the server only runs when needed.
+
+1.  **Navigate:** Click on **"Stream Control"** in the side menu (under the "Streaming" header).
+2.  **Check the Status:**
+    *   **RUNNING (Green):** The stream server is on and active.
+    *   **STOPPED / TERMINATED (Red):** The stream server is off.
+    *   **PROVISIONING / STAGING (Yellow):** The server is in the process of starting up or shutting down.
+3.  **Actions:**
+    *   **Start Stream:** If the server is off, click this button to turn it on. Please wait about **1-2 minutes** for it to fully boot up before the stream is accessible at `stream.osucoc.org`.
+    *   **Stop Stream:** If the server is on, click this button to turn it off. This is recommended after a service or event is over.
+4.  **Auto-Shutdown Timer:**
+    *   When the server is `RUNNING`, you will see a circular timer counting down from **6 hours**.
+    *   This is a safety measure to prevent the server from being left on accidentally. It will automatically turn off after 6 hours of continuous use.
+
+---
+
+## 5. Key Differences from Old System
 
 | Feature | Old System (`checkin.osucoc.org`) | New System (`admin.osucoc.org`) |
 | :--- | :--- | :--- |
